@@ -91,8 +91,16 @@ app.get('/auth/github',
 app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function (req, res) {
-    res.redirect('/');
+    const loginFrom = req.cookies.loginFrom;
+    if (loginFrom && loginFrom.startsWith('/')) {
+      res.clearCookie('loginFrom');
+      res.redirect(loginFrom);
+    } else {
+      res.redirect('/');
+    }
 });
+
+// http://localhost:8000/schedules/46678a71-3b39-4536-b652-aef3c3682f91
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
